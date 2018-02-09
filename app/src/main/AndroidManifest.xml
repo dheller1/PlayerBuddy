@@ -16,7 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DeploymentOverviewActivity"></activity>
+        <activity android:name=".DeploymentOverviewActivity" />
+        <activity
+            android:name=".ShowFullscreenImageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_show_fullscreen_image"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

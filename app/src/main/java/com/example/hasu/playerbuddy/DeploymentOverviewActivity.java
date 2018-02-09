@@ -1,5 +1,6 @@
 package com.example.hasu.playerbuddy;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +16,8 @@ public class DeploymentOverviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_deployment_overview);
 
         ImageView iv1 = (ImageView)findViewById(R.id.deploymentView1);
-        iv1.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy1));
+        //iv1.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy1));
+        iv1.setImageResource(R.drawable.deploy1);
         ImageView iv2 = (ImageView)findViewById(R.id.deploymentView2);
         iv2.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy1));
         ImageView iv3 = (ImageView)findViewById(R.id.deploymentView3);
@@ -28,7 +30,18 @@ public class DeploymentOverviewActivity extends AppCompatActivity {
         iv6.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy1));
     }
 
-    public Bitmap loadImage(int imageID, int targetHeight, int targetWidth) {
+    public void onImageClicked(View view) {
+        ImageView iv = (ImageView) view;
+        if(iv != null) {
+            // FIXME: Try to query the resource ID here?! But it seems not easy starting with an
+            // ImageView instance...
+            Intent fullscreenIntent = new Intent(this, ShowFullscreenImageActivity.class);
+            fullscreenIntent.putExtra(ShowFullscreenImageActivity.FULLSCREEN_IMAGE_ID, R.drawable.deploy1);
+            startActivity(fullscreenIntent);
+        }
+    }
+
+    /*public Bitmap loadImage(int imageID, int targetHeight, int targetWidth) {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(getResources(), imageID, options);
@@ -44,5 +57,5 @@ public class DeploymentOverviewActivity extends AppCompatActivity {
         options.inSampleSize = inSampleSize;
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeResource(getResources(), imageID, options);
-    }
+    }*/
 }
