@@ -17,4 +17,136 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textMyVp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="My VP:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textRoundNumber" />
+
+    <TextView
+        android:id="@+id/textOpponentVp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Opponent VP:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textMyVp" />
+
+    <TextView
+        android:id="@+id/textRoundNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginLeft="16dp"
+        android:text="Round:"
+        app:layout_constraintBaseline_toBaselineOf="@+id/roundNumberMinus"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/roundNumberLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="1"
+        app:layout_constraintBaseline_toBaselineOf="@+id/roundNumberPlus"
+        app:layout_constraintEnd_toStartOf="@+id/roundNumberPlus"
+        app:layout_constraintStart_toEndOf="@+id/roundNumberMinus" />
+
+    <Button
+        android:id="@+id/roundNumberPlus"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="46dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:onClick="onIncreaseRoundNumber"
+        android:text="+"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/roundNumberMinus"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="46dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:onClick="onDecreaseRoundNumber"
+        android:text="-"
+        app:layout_constraintBaseline_toBaselineOf="@+id/roundNumberLabel"
+        app:layout_constraintStart_toEndOf="@+id/textRoundNumber" />
+
+    <TextView
+        android:id="@+id/ownVpLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="0"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textMyVp"
+        app:layout_constraintEnd_toStartOf="@+id/ownVpPlus"
+        app:layout_constraintStart_toEndOf="@+id/ownVpMinus" />
+
+    <Button
+        android:id="@+id/ownVpPlus"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="46dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:onClick="onIncreaseOwnVP"
+        android:text="+"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textMyVp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/ownVpMinus"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="46dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:onClick="onDecreaseOwnVP"
+        android:text="-"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textMyVp"
+        app:layout_constraintStart_toEndOf="@+id/textRoundNumber" />
+
+    <TextView
+        android:id="@+id/opponentVpLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="0"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textOpponentVp"
+        app:layout_constraintEnd_toStartOf="@+id/opponentVpPlus"
+        app:layout_constraintStart_toEndOf="@+id/opponentVpMinus" />
+
+    <Button
+        android:id="@+id/opponentVpPlus"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="46dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:onClick="onIncreaseOpponentVP"
+        android:text="+"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textOpponentVp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/opponentVpMinus"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="46dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:onClick="onDecreaseOpponentVP"
+        android:text="-"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textOpponentVp"
+        app:layout_constraintStart_toEndOf="@+id/textRoundNumber" />
+
 </android.support.constraint.ConstraintLayout>
