@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.hasu.playerbuddy.core.GameSession;
@@ -21,8 +22,8 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
         // Should be inner class to have access to the Context and functions as getLayoutInflater().
         private List<GameSession> mSessions = new ArrayList<>();
 
-        public void addItem(GameSession session) {
-            mSessions.add(session);
+        private void addItem(GameSession session) {
+            mSessions.add(0, session); // insert to front to have the newest displayed first
             notifyDataSetChanged();
         }
 
@@ -64,14 +65,40 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
         }
 
         private String makeSubtitleText(GameSession session) {
+            String s = "";
+            switch(session.getStatus()) {
+                case Created:
+                    s += "created ";
+                    break;
+                case Started:
+                    s += "started ";
+                    break;
+                case Finished:
+                    s += "finished ";
+                    break;
+            }
             DateFormat formatter = DateFormat.getDateTimeInstance();
-            return formatter.format(session.getCreationDT());
+            s += formatter.format(session.getCreationDT());
+            return s;
         }
     }
+
+    private GameSessionAdapter mSessionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_session_overview);
+
+        mSessionAdapter = new GameSessionAdapter();
+        ListView list = (ListView)findViewById(R.id.listView);
+        list.setAdapter(mSessionAdapter);
+        // Handle clicks in list
+        //list.setOnItemClickListener(null);
+    }
+
+    public void onAddSession(View view) {
+        GameSession s = new GameSession("Warhammer 40.000", 1500);
+        mSessionAdapter.addItem(s);
     }
 }
