@@ -1,18 +1,27 @@
 package com.example.hasu.playerbuddy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.hasu.playerbuddy.core.GameSession;
+import com.example.hasu.playerbuddy.core.JSONSerializer;
 
+import org.json.JSONException;
+
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,11 +103,49 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
         ListView list = (ListView)findViewById(R.id.listView);
         list.setAdapter(mSessionAdapter);
         // Handle clicks in list
-        //list.setOnItemClickListener(null);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int which, long id) {
+                loadSession(mSessionAdapter.getItem(which));
+            }
+        });
+
+        // find sessions in storage
+        JSONSerializer js = new JSONSerializer(this.getApplicationContext());
+        File[] appFiles = getFilesDir().listFiles();
+        if(appFiles != null) {
+            for(File f : appFiles) {
+                if(f.getName().endsWith(GameSession.Serializer.FILE_EXTENSION)) {
+                    try {
+                        GameSession s = new GameSession("", 0);
+                        s.SERIALIZER.readFromJSON(js.readFile(f.getName()));
+                        mSessionAdapter.addItem(s);
+                    }
+                    catch(JSONException|IOException|ParseException e) {
+                        Log.e("Read invalid data", "", e);
+                    }
+                }
+            }
+        }
+    }
+
+    public void loadSession(GameSession session) {
+        Intent intent = new Intent(this, MainActivity.class);
+        // TODO: Add session data intent.put
+        startActivity(intent);
     }
 
     public void onAddSession(View view) {
         GameSession s = new GameSession("Warhammer 40.000", 1500);
         mSessionAdapter.addItem(s);
+        JSONSerializer js = new JSONSerializer(this.getApplicationContext());
+        try {
+            String actualFilename = js.writeToFile(s.SERIALIZER.toJSON(), s.SERIALIZER.suggestFilename(),
+                    GameSession.Serializer.FILE_EXTENSION);
+            s.SERIALIZER.setFilename(actualFilename);
+        }
+        catch(JSONException| IOException e) {
+            Log.e("Error saving data", "", e);
+        }
     }
 }
