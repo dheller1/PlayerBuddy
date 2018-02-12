@@ -17,6 +17,7 @@ public class GameSession {
         private static final String JSON_STATUS = "status";
         private static final String JSON_POINTSIZE = "point_size";
         private static final String JSON_CREATIONDT = "created";
+        private static final String JSON_ROUNDCOUNTER = "round_counter";
         Serializer(GameSession session) {
             mSession = session;
             mDateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
@@ -29,6 +30,7 @@ public class GameSession {
             jo.put(JSON_STATUS, mSession.getStatus().getId());
             jo.put(JSON_POINTSIZE, mSession.getPoints());
             jo.put(JSON_CREATIONDT, mDateFormat.format(mSession.getCreationDT()));
+            jo.put(JSON_ROUNDCOUNTER, mSession.mRoundCounter.getValue());
             return jo;
         }
 
@@ -47,6 +49,8 @@ public class GameSession {
             mSession.mStatus = Status.Created;
             mSession.mPointSize = jo.getInt(JSON_POINTSIZE);
             mSession.mCreationDT = mDateFormat.parse(jo.getString(JSON_CREATIONDT));
+            mSession.mRoundCounter.setValue(jo.getInt(JSON_ROUNDCOUNTER));
+
         }
 
         public String suggestFilename() {
@@ -72,16 +76,20 @@ public class GameSession {
         public int getId() { return id; }
     }
 
+    // data fields
     private Date mCreationDT, mStartGameDT, mFinishGameDT;
     private int mPointSize;
     private String mGameType;
     private Status mStatus;
+    private RoundCounter mRoundCounter;
 
     public GameSession(String type, int points) {
         mCreationDT = new Date();
         mPointSize = points;
         mGameType = type;
         mStatus = Status.Created;
+
+        mRoundCounter = new RoundCounter();
     }
 
     public int getPoints() { return mPointSize; }

@@ -25,7 +25,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class GameSessionOverviewActivity extends AppCompatActivity {
     class GameSessionAdapter extends BaseAdapter {
         // Should be inner class to have access to the Context and functions as getLayoutInflater().

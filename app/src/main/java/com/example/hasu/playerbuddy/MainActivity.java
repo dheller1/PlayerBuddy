@@ -5,24 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-class RoundCounter {
-    private String[] labels = {"Top of ", "Bottom of "};
-    private int counter;
-    RoundCounter() { counter = 0; }
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(labels[counter % labels.length]);
-        sb.append(counter / labels.length + 1);
-        return sb.toString();
-    }
-    public int getValue() { return counter; }
-    public void setValue(int i) { counter = i; }
-    public RoundCounter inc() { ++counter; return this; }
-    public RoundCounter dec() { --counter; return this; }
+import com.example.hasu.playerbuddy.core.RoundCounter;
 
-};
+;
 
 public class MainActivity extends AppCompatActivity {
     static final String KEY_OWNVP = "KEY_OWNVP";
