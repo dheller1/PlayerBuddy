@@ -3,20 +3,31 @@ package com.example.hasu.playerbuddy;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.hasu.playerbuddy.core.GameSession;
+import com.example.hasu.playerbuddy.core.JSONSerializer;
 import com.example.hasu.playerbuddy.core.RoundCounter;
 
-;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 public class MainActivity extends AppCompatActivity {
     static final String KEY_OWNVP = "KEY_OWNVP";
     static final String KEY_OPPONENTVP = "KEY_OPPONENTVP";
     static final String KEY_ROUNDCOUNTER = "KEY_ROUNDCOUNTER";
 
+    static final String KEY_SESSIONFILE = "KEY_SESSION_FILENAME";
+
     private int mOwnVP, mOpponentVP;
     private RoundCounter mRoundCnt;
+
+    private GameSession mSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +36,20 @@ public class MainActivity extends AppCompatActivity {
         mOwnVP = 0;
         mOpponentVP = 0;
         mRoundCnt = new RoundCounter();
+
+        Intent intent = getIntent();
+        String sessionFilename = intent.getStringExtra(KEY_SESSIONFILE);
+        Toast.makeText(this, "Loading " + sessionFilename, Toast.LENGTH_SHORT).show();
+
+        JSONSerializer js = new JSONSerializer(getApplicationContext());
+        try {
+            mSession = new GameSession("", 0);
+            mSession.SERIALIZER.loadFromFile(sessionFilename, getApplicationContext());
+        }
+        catch(JSONException|IOException|ParseException e) {
+            Log.e("Read invalid data", "", e);
+        }
         updateControls();
-        //Toast.makeText(this, "In onCreate", Toast.LENGTH_SHORT).show();
     }
 
     @Override
