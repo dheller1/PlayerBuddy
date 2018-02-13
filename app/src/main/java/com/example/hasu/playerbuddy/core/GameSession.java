@@ -1,8 +1,11 @@
 package com.example.hasu.playerbuddy.core;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -22,8 +25,22 @@ public class GameSession {
             mSession = session;
             mDateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
         }
-
+        public String getFilename() { return mFilename; }
         public void setFilename(String fn) { mFilename = fn; }
+
+        public void loadFromFile(String filename, Context ctx)
+                throws IOException, JSONException, ParseException {
+            JSONSerializer js = new JSONSerializer(ctx);
+            readFromJSON(js.readFile(filename));
+            setFilename(mFilename = filename);
+        }
+
+        public void writeToFile(String filename, Context ctx)
+                throws IOException, JSONException {
+            JSONSerializer js = new JSONSerializer(ctx);
+            mFilename = js.writeToFile(toJSON(), filename, FILE_EXTENSION);
+        }
+
         public JSONObject toJSON() throws JSONException {
             JSONObject jo = new JSONObject();
             jo.put(JSON_GAMETYPE, mSession.getGameType());
@@ -83,6 +100,12 @@ public class GameSession {
     private Status mStatus;
     private RoundCounter mRoundCounter;
 
+    // constructors
+    public GameSession() {
+        mCreationDT = new Date();
+        mRoundCounter = new RoundCounter();
+        mStatus = Status.Created;
+    }
     public GameSession(String type, int points) {
         mCreationDT = new Date();
         mPointSize = points;
@@ -92,6 +115,7 @@ public class GameSession {
         mRoundCounter = new RoundCounter();
     }
 
+    // data accessors
     public int getPoints() { return mPointSize; }
     public String getGameType() { return mGameType; }
     public Date getCreationDT() { return mCreationDT; }

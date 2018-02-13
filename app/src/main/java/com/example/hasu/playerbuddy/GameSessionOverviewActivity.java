@@ -110,14 +110,13 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
         });
 
         // find sessions in storage
-        JSONSerializer js = new JSONSerializer(this.getApplicationContext());
         File[] appFiles = getFilesDir().listFiles();
         if(appFiles != null) {
             for(File f : appFiles) {
                 if(f.getName().endsWith(GameSession.Serializer.FILE_EXTENSION)) {
                     try {
                         GameSession s = new GameSession("", 0);
-                        s.SERIALIZER.readFromJSON(js.readFile(f.getName()));
+                        s.SERIALIZER.loadFromFile(f.getName(), getApplicationContext());
                         mSessionAdapter.addItem(s);
                     }
                     catch(JSONException|IOException|ParseException e) {
@@ -130,18 +129,15 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
 
     public void loadSession(GameSession session) {
         Intent intent = new Intent(this, MainActivity.class);
-        // TODO: Add session data intent.put
+        intent.putExtra(MainActivity.KEY_SESSIONFILE, session.SERIALIZER.getFilename());
         startActivity(intent);
     }
 
     public void onAddSession(View view) {
         GameSession s = new GameSession("Warhammer 40.000", 1500);
         mSessionAdapter.addItem(s);
-        JSONSerializer js = new JSONSerializer(this.getApplicationContext());
         try {
-            String actualFilename = js.writeToFile(s.SERIALIZER.toJSON(), s.SERIALIZER.suggestFilename(),
-                    GameSession.Serializer.FILE_EXTENSION);
-            s.SERIALIZER.setFilename(actualFilename);
+            s.SERIALIZER.writeToFile(s.SERIALIZER.suggestFilename(), getApplicationContext());
         }
         catch(JSONException| IOException e) {
             Log.e("Error saving data", "", e);
