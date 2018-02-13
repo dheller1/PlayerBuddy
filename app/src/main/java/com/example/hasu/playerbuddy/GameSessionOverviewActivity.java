@@ -116,7 +116,7 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
                 if(f.getName().endsWith(GameSession.Serializer.FILE_EXTENSION)) {
                     try {
                         GameSession s = new GameSession("", 0);
-                        s.SERIALIZER.loadFromFile(f.getName(), getApplicationContext());
+                        s.SERIALIZER.load(f.getName(), getApplicationContext());
                         mSessionAdapter.addItem(s);
                     }
                     catch(JSONException|IOException|ParseException e) {
@@ -137,7 +137,7 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
         GameSession s = new GameSession("Warhammer 40.000", 1500);
         mSessionAdapter.addItem(s);
         try {
-            s.SERIALIZER.writeToFile(s.SERIALIZER.suggestFilename(), getApplicationContext());
+            s.SERIALIZER.save(getApplicationContext());
         }
         catch(JSONException| IOException e) {
             Log.e("Error saving data", "", e);

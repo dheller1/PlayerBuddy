@@ -26,22 +26,23 @@ public class GameSession {
             mDateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
         }
         public String getFilename() { return mFilename; }
-        public void setFilename(String fn) { mFilename = fn; }
 
-        public void loadFromFile(String filename, Context ctx)
+        // Deserializes object from a given filename and sets the mFilename member to that file.
+        public void load(String filename, Context ctx)
                 throws IOException, JSONException, ParseException {
             JSONSerializer js = new JSONSerializer(ctx);
             readFromJSON(js.readFile(filename));
-            setFilename(mFilename = filename);
+            mFilename = filename;
         }
 
-        public void writeToFile(String filename, Context ctx)
+        // Serializes object content to a file and sets the mFilename member.
+        public void save(Context ctx)
                 throws IOException, JSONException {
             JSONSerializer js = new JSONSerializer(ctx);
-            mFilename = js.writeToFile(toJSON(), filename, FILE_EXTENSION);
+            mFilename = js.writeToFile(toJSON(), suggestFilename(), FILE_EXTENSION);
         }
 
-        public JSONObject toJSON() throws JSONException {
+        private JSONObject toJSON() throws JSONException {
             JSONObject jo = new JSONObject();
             jo.put(JSON_GAMETYPE, mSession.getGameType());
             jo.put(JSON_STATUS, mSession.getStatus().getId());
@@ -51,7 +52,7 @@ public class GameSession {
             return jo;
         }
 
-        public void readFromJSON(JSONObject jo) throws JSONException, ParseException {
+        private void readFromJSON(JSONObject jo) throws JSONException, ParseException {
             mSession.mGameType = jo.getString(JSON_GAMETYPE);
             final int statusCode = jo.getInt(JSON_STATUS);
             if(statusCode == Status.Created.getId()) {
@@ -67,7 +68,6 @@ public class GameSession {
             mSession.mPointSize = jo.getInt(JSON_POINTSIZE);
             mSession.mCreationDT = mDateFormat.parse(jo.getString(JSON_CREATIONDT));
             mSession.mRoundCounter.setValue(jo.getInt(JSON_ROUNDCOUNTER));
-
         }
 
         public String suggestFilename() {

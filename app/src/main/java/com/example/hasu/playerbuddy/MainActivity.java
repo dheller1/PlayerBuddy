@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         JSONSerializer js = new JSONSerializer(getApplicationContext());
         try {
             mSession = new GameSession("", 0);
-            mSession.SERIALIZER.loadFromFile(sessionFilename, getApplicationContext());
+            mSession.SERIALIZER.load(sessionFilename, getApplicationContext());
         }
         catch(JSONException|IOException|ParseException e) {
             Log.e("Read invalid data", "", e);
