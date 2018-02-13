@@ -70,7 +70,7 @@ public class GameSession {
             mSession.mRoundCounter.setValue(jo.getInt(JSON_ROUNDCOUNTER));
         }
 
-        public String suggestFilename() {
+        private String suggestFilename() {
             StringBuilder sb = new StringBuilder();
             sb.append(mSession.getGameType());
             sb.append("_");
