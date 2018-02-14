@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.hasu.playerbuddy.core.GameSession;
 import com.example.hasu.playerbuddy.core.JSONSerializer;
+import com.example.hasu.playerbuddy.core.db.DBAccessor;
 
 import org.json.JSONException;
 
@@ -32,6 +33,11 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
 
         private void addItem(GameSession session) {
             mSessions.add(0, session); // insert to front to have the newest displayed first
+            notifyDataSetChanged();
+        }
+
+        private void setList(List<GameSession> list) {
+            mSessions = list;
             notifyDataSetChanged();
         }
 
@@ -110,7 +116,12 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
         });
 
         // find sessions in storage
-        File[] appFiles = getFilesDir().listFiles();
+        DBAccessor dba = new DBAccessor(getApplicationContext());
+        dba.open();
+        mSessionAdapter.setList(dba.getAllSessions());
+        dba.close();
+
+        /*File[] appFiles = getFilesDir().listFiles();
         if(appFiles != null) {
             for(File f : appFiles) {
                 if(f.getName().endsWith(GameSession.Serializer.FILE_EXTENSION)) {
@@ -124,23 +135,25 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
                     }
                 }
             }
-        }
+        }*/
     }
 
     public void loadSession(GameSession session) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(MainActivity.KEY_SESSIONFILE, session.SERIALIZER.getFilename());
+        intent.putExtra(MainActivity.KEY_SESSION_ID, session.getDBId());
         startActivity(intent);
     }
 
     public void onAddSession(View view) {
-        GameSession s = new GameSession("Warhammer 40.000", 1500);
-        mSessionAdapter.addItem(s);
+        DBAccessor dba = new DBAccessor(getApplicationContext());
+
+        dba.open();
         try {
-            s.SERIALIZER.save(getApplicationContext());
+            GameSession s = dba.makeGameSession("Warhammer 40.000", 1500);
+            mSessionAdapter.addItem(s);
         }
-        catch(JSONException| IOException e) {
-            Log.e("Error saving data", "", e);
+        finally {
+            dba.close();
         }
     }
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.hasu.playerbuddy.core.GameSession;
 import com.example.hasu.playerbuddy.core.JSONSerializer;
 import com.example.hasu.playerbuddy.core.RoundCounter;
+import com.example.hasu.playerbuddy.core.db.DBAccessor;
 
 import org.json.JSONException;
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     static final String KEY_OPPONENTVP = "KEY_OPPONENTVP";
     static final String KEY_ROUNDCOUNTER = "KEY_ROUNDCOUNTER";
 
-    static final String KEY_SESSIONFILE = "KEY_SESSION_FILENAME";
+    static final String KEY_SESSION_ID = "KEY_SESSION_ID";
 
     private int mOwnVP, mOpponentVP;
     private RoundCounter mRoundCnt;
@@ -38,17 +39,12 @@ public class MainActivity extends AppCompatActivity {
         mRoundCnt = new RoundCounter();
 
         Intent intent = getIntent();
-        String sessionFilename = intent.getStringExtra(KEY_SESSIONFILE);
-        Toast.makeText(this, "Loading " + sessionFilename, Toast.LENGTH_SHORT).show();
+        long sessionID = intent.getLongExtra(KEY_SESSION_ID, -1);
 
-        JSONSerializer js = new JSONSerializer(getApplicationContext());
-        try {
-            mSession = new GameSession("", 0);
-            mSession.SERIALIZER.load(sessionFilename, getApplicationContext());
-        }
-        catch(JSONException|IOException|ParseException e) {
-            Log.e("Read invalid data", "", e);
-        }
+        DBAccessor dba = new DBAccessor(getApplicationContext());
+        dba.open();
+        mSession = dba.getSessionFromId(sessionID);
+        dba.close();
         updateControls();
     }
 

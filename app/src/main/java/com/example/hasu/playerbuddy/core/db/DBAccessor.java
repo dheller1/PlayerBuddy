@@ -1,8 +1,19 @@
 package com.example.hasu.playerbuddy.core.db;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.example.hasu.playerbuddy.core.GameSession;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 public class DBAccessor {
@@ -14,7 +25,10 @@ public class DBAccessor {
     private SQLiteDatabase theDB;
     private DBHelper mDBHelper;
 
+    private static final SimpleDateFormat DTF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
     public DBAccessor(Context context) {
+
         Log.d(LogTag, "Creating DBHelper.");
         mDBHelper = new DBHelper(context);
     }
@@ -29,39 +43,75 @@ public class DBAccessor {
         theDB.close();
     }
 
-    /** factory method creating object and storing it in the DB */
-//    public SpendingItem makeSpendingItem(Amount amount, LocalDate date, String description) {
-//        ContentValues cv = new ContentValues();
-//        cv.put(DBHelper.COL_AMOUNT, amount.toString());
-//        cv.put(DBHelper.COL_DATE, DTF.format(date));
-//        cv.put(DBHelper.COL_DESCRIPTION, description);
-//
-//        long insertID = theDB.insert(DBHelper.TABLE_SPENDINGITEMS, null, cv);
-//        Cursor cursor = theDB.query(DBHelper.TABLE_SPENDINGITEMS, SpendingItemColumns,
-//                DBHelper.COL_ID + "=" + insertID, null,
-//                null, null, null);
-//
-//        cursor.moveToFirst();
-//        SpendingItem s = getSpendingItemFromCursor(cursor);
-//        cursor.close();
-//        return s;
-//    }
-//
-//    public List<SpendingItem> getAllSpendingItems() {
-//        List<SpendingItem> l = new ArrayList<>();
-//        Cursor c = theDB.query(DBHelper.TABLE_SPENDINGITEMS, SpendingItemColumns,
-//                null, null, null, null, null);
-//        c.moveToFirst();
-//        SpendingItem itm;
-//
-//        while(!c.isAfterLast()) {
-//            itm = getSpendingItemFromCursor(c);
-//            l.add(itm);
-//            c.moveToNext();
-//        }
-//        c.close();
-//        return l;
-//    }
+    public GameSession makeGameSession(String summaryText, int points) {
+        GameSession s = new GameSession(summaryText, points);
+        ContentValues cv = new ContentValues();
+        cv.put(DBHelper.Col_TextSummary, s.getGameType());
+        cv.put(DBHelper.Col_PointSize, s.getPoints());
+        cv.put(DBHelper.Col_Status, s.getStatus().getId());
+        cv.put(DBHelper.Col_CreationDT, DTF.format(s.getCreationDT()));
+
+        long id = theDB.insert(DBHelper.Table_GameSessions, null, cv);
+        Cursor cursor = theDB.query(DBHelper.Table_GameSessions, GameSessionColumns,
+                DBHelper.Col_Id + "=" + id, null, null, null, null, null);
+        cursor.moveToFirst();
+        cursor.close();
+        s.setDBId(id);
+        return s;
+    }
+
+    public List<GameSession> getAllSessions() {
+        List<GameSession> l = new ArrayList<>();
+        Cursor c = theDB.query(DBHelper.Table_GameSessions, GameSessionColumns, null, null, null, null, null);
+        c.moveToFirst();
+
+        GameSession s;
+        while(!c.isAfterLast()) {
+            s = getGameSessionFromCursor(c);
+            l.add(s);
+            c.moveToNext();
+        }
+        c.close();
+        return l;
+    }
+
+    public GameSession getSessionFromId(long id) {
+        Cursor c = theDB.query(DBHelper.Table_GameSessions, GameSessionColumns,
+                DBHelper.Col_Id + "=" + id, null, null, null, null);
+        c.moveToFirst();
+        GameSession session = getGameSessionFromCursor(c);
+        c.close();
+        return session;
+    }
+
+    private GameSession getGameSessionFromCursor(Cursor c) {
+        int colId = c.getColumnIndex(DBHelper.Col_Id);
+        int colSummary = c.getColumnIndex(DBHelper.Col_TextSummary);
+        int colPoints = c.getColumnIndex(DBHelper.Col_PointSize);
+        int colStatus = c.getColumnIndex(DBHelper.Col_Status);
+        int colCreationDT = c.getColumnIndex(DBHelper.Col_CreationDT);
+
+        long id = c.getLong(colId);
+        String summary = c.getString(colSummary);
+        int points = c.getInt(colPoints);
+        int statusId = c.getInt(colStatus);
+        Date creationDT = null;
+        try {
+            creationDT = DTF.parse(c.getString(colCreationDT));
+        }
+        catch(ParseException e) {
+            Log.e(LogTag, "Error parsing date", e);
+        }
+
+        GameSession session = new GameSession(summary, points);
+        session.setStatus(session.statusForId(statusId));
+        session.setDBId(id);
+
+        if(creationDT != null) {
+            session.setCreationDT(creationDT);
+        }
+        return session;
+    }
 //
 //    private SpendingItem getSpendingItemFromCursor(Cursor c) {
 //        int cId = c.getColumnIndex(DBHelper.COL_ID);
