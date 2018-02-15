@@ -1,16 +1,28 @@
 package com.example.hasu.playerbuddy.core.db;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.example.hasu.playerbuddy.core.GameSession;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static android.database.Cursor.FIELD_TYPE_BLOB;
+import static android.database.Cursor.FIELD_TYPE_FLOAT;
+import static android.database.Cursor.FIELD_TYPE_INTEGER;
+import static android.database.Cursor.FIELD_TYPE_NULL;
+import static android.database.Cursor.FIELD_TYPE_STRING;
+
 public abstract class DBSerializable {
     protected abstract String[] getAllColumns();
     protected abstract String getTableName();
+    protected abstract void setColumnValue(String column, int value);
+    protected abstract void setColumnValue(String column, double value);
+    protected abstract void setColumnValue(String column, String value);
 
     private static final String Col_Id = "_id";
     protected static final SimpleDateFormat DTF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -58,6 +70,40 @@ public abstract class DBSerializable {
         return true;
     }
 
+    public void loadFromDB(SQLiteDatabase db, long id) throws Exception {
+        Cursor c = db.query(getTableName(), getAllColumns(),
+                Col_Id + "=" + id, null, null, null, null);
+        c.moveToFirst();
+        if(c.isAfterLast()) {
+            c.close();
+            throw new Exception("Entry with given ID not found.");
+        }
+
+        try {
+            for (String col : getAllColumns()) {
+                int colIndex = c.getColumnIndexOrThrow(col);
+                switch (c.getType(colIndex)) {
+                    case FIELD_TYPE_INTEGER:
+                        setColumnValue(col, c.getInt(colIndex));
+                        break;
+                    case FIELD_TYPE_FLOAT:
+                        setColumnValue(col, c.getDouble(colIndex));
+                        break;
+                    case FIELD_TYPE_STRING:
+                        setColumnValue(col, c.getString(colIndex));
+                        break;
+                    case FIELD_TYPE_NULL:
+                        break;
+                    case FIELD_TYPE_BLOB:
+                    default:
+                        throw new Exception("datatype not supported.");
+                }
+            }
+        }
+        finally {
+            c.close();
+        }
+    }
 
     protected void updateDB(List<ColumnChange> changesToProcess) {
         if(changesToProcess.isEmpty()) {

@@ -1,7 +1,10 @@
 package com.example.hasu.playerbuddy.core;
 
+import android.util.Log;
+
 import com.example.hasu.playerbuddy.core.db.DBSerializable;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +16,33 @@ public class GameSession extends DBSerializable {
     private static final String Col_Status = "status";
     @Override protected String getTableName() { return "game_sessions"; }
     @Override protected String[] getAllColumns() { return new String[]{Col_TextSummary, Col_Status, Col_PointSize, Col_CreationDT}; }
+    @Override protected void setColumnValue(String column, double value) {} // not used
+    @Override protected void setColumnValue(String column, int value) {
+        switch(column) {
+            case Col_PointSize:
+                mPointSize = value;
+                break;
+            case Col_Status:
+                mStatus = statusForId(value);
+                break;
+        }
+    }
+
+    @Override protected void setColumnValue(String column, String value) {
+        switch(column) {
+            case Col_TextSummary:
+                mGameType = value;
+                break;
+            case Col_CreationDT:
+                try {
+                    mCreationDT = DTF.parse(value);
+                }
+                catch(ParseException e) {
+                    Log.e("ParseError", "Unable to parse date: " + value, e);
+                }
+                break;
+        }
+    }
 
     public Status statusForId(int id) {
         switch(id) {
