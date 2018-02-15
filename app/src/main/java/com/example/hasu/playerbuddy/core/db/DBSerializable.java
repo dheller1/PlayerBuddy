@@ -1,16 +1,23 @@
 package com.example.hasu.playerbuddy.core.db;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class DBSerializable {
-    protected static final String Col_Id = "_id";
-    private long mID;
-    private final String mTableName;
+    protected abstract String[] getAllColumns();
+    protected abstract String getTableName();
 
+    private static final String Col_Id = "_id";
     protected static final SimpleDateFormat DTF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+    private long mID;
+    private boolean mAlreadyInDB = false;
 
     // List of column names which must be updated when saving
     //private List<String> mChangedColumns; // rather use a kind of Set?
@@ -25,11 +32,33 @@ public abstract class DBSerializable {
 
     private ConcurrentLinkedQueue<ColumnChange> mPendingChanges;
 
-    protected DBSerializable(String tableName) {
+    protected DBSerializable() {
         //mChangedColumns = new ArrayList<>();
-        mTableName = tableName;
         mPendingChanges = new ConcurrentLinkedQueue<>();
     }
+
+    // Subclasses should implemented their own values and finally call the base class method
+    protected String getColumnValueForDB(String columnName) throws Exception {
+        switch(columnName) {
+            case Col_Id: return Long.toString(getID());
+        }
+        throw new Exception("Column not found."); // TODO: Find better type
+    }
+
+    public boolean addToDB(SQLiteDatabase db) throws Exception {
+        if(mAlreadyInDB) {
+            return false;
+        }
+        ContentValues cv = new ContentValues();
+        for(String col : getAllColumns()) {
+            cv.put(col, getColumnValueForDB(col));
+        }
+
+        mID = db.insert(getTableName(), null, cv);
+        mAlreadyInDB = true;
+        return true;
+    }
+
 
     protected void updateDB(List<ColumnChange> changesToProcess) {
         if(changesToProcess.isEmpty()) {
@@ -37,7 +66,8 @@ public abstract class DBSerializable {
         }
         StringBuilder querySB = new StringBuilder();
         // TODO: Generate query string based on mID
-        querySB.append("UPDATE " + mTableName);
+        querySB.append("UPDATE ");
+        querySB.append(getTableName());
         querySB.append(" WHERE _id=");
         querySB.append(mID);
         querySB.append(" SET ");
@@ -62,13 +92,5 @@ public abstract class DBSerializable {
         // updateDB(changes);
     }
 
-    // Subclasses should implemented their own values and finally call the base class method
-    protected String getValueForDB(String columnName) throws Exception {
-        switch(columnName) {
-            case Col_Id:
-                return Long.toString(getID());
-        }
-        throw new Exception("Column not found."); // TODO: Find better type
-    }
 
 }

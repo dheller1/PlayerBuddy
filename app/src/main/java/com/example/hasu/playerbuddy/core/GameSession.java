@@ -3,14 +3,16 @@ package com.example.hasu.playerbuddy.core;
 import com.example.hasu.playerbuddy.core.db.DBSerializable;
 
 import java.util.Date;
+import java.util.List;
 
 public class GameSession extends DBSerializable {
     // DB serialization constants
-    private static final String TableName = "game_sessions";
     private static final String Col_TextSummary = "text_summary";
     private static final String Col_PointSize = "point_size";
     private static final String Col_CreationDT = "creation_dt";
     private static final String Col_Status = "status";
+    @Override protected String getTableName() { return "game_sessions"; }
+    @Override protected String[] getAllColumns() { return new String[]{Col_TextSummary, Col_Status, Col_PointSize, Col_CreationDT}; }
 
     public Status statusForId(int id) {
         switch(id) {
@@ -45,13 +47,11 @@ public class GameSession extends DBSerializable {
 
     // constructors
     public GameSession() {
-        super(TableName);
         mCreationDT = new Date();
         mRoundCounter = new RoundCounter();
         mStatus = Status.Created;
     }
     public GameSession(String type, int points) {
-        super(TableName);
         mCreationDT = new Date();
         mPointSize = points;
         mGameType = type;
@@ -60,8 +60,7 @@ public class GameSession extends DBSerializable {
         mRoundCounter = new RoundCounter();
     }
 
-    @Override
-    protected String getValueForDB(String columnName) throws Exception {
+    @Override protected String getColumnValueForDB(String columnName) throws Exception {
         switch(columnName) {
             case Col_TextSummary:
                 return mGameType;
@@ -72,7 +71,7 @@ public class GameSession extends DBSerializable {
             case Col_Status:
                 return Integer.toString(mStatus.getId());
             default:
-                return super.getValueForDB(columnName);
+                return super.getColumnValueForDB(columnName);
         }
     }
 
