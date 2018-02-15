@@ -1,11 +1,16 @@
 package com.example.hasu.playerbuddy.core.db;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class DBSerializable {
+    protected static final String Col_Id = "_id";
     private long mID;
     private final String mTableName;
+
+    protected static final SimpleDateFormat DTF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     // List of column names which must be updated when saving
     //private List<String> mChangedColumns; // rather use a kind of Set?
@@ -20,7 +25,7 @@ public abstract class DBSerializable {
 
     private ConcurrentLinkedQueue<ColumnChange> mPendingChanges;
 
-    DBSerializable(String tableName) {
+    protected DBSerializable(String tableName) {
         //mChangedColumns = new ArrayList<>();
         mTableName = tableName;
         mPendingChanges = new ConcurrentLinkedQueue<>();
@@ -57,6 +62,13 @@ public abstract class DBSerializable {
         // updateDB(changes);
     }
 
-    abstract String getValueForDB(String columnName); // MUST BE IMPLEMENTED BY SUBCLASS
+    // Subclasses should implemented their own values and finally call the base class method
+    protected String getValueForDB(String columnName) throws Exception {
+        switch(columnName) {
+            case Col_Id:
+                return Long.toString(getID());
+        }
+        throw new Exception("Column not found."); // TODO: Find better type
+    }
 
 }

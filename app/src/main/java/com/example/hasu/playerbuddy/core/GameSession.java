@@ -1,8 +1,17 @@
 package com.example.hasu.playerbuddy.core;
 
+import com.example.hasu.playerbuddy.core.db.DBSerializable;
+
 import java.util.Date;
 
-public class GameSession {
+public class GameSession extends DBSerializable {
+    // DB serialization constants
+    private static final String TableName = "game_sessions";
+    private static final String Col_TextSummary = "text_summary";
+    private static final String Col_PointSize = "point_size";
+    private static final String Col_CreationDT = "creation_dt";
+    private static final String Col_Status = "status";
+
     public Status statusForId(int id) {
         switch(id) {
             case 0:
@@ -36,17 +45,35 @@ public class GameSession {
 
     // constructors
     public GameSession() {
+        super(TableName);
         mCreationDT = new Date();
         mRoundCounter = new RoundCounter();
         mStatus = Status.Created;
     }
     public GameSession(String type, int points) {
+        super(TableName);
         mCreationDT = new Date();
         mPointSize = points;
         mGameType = type;
         mStatus = Status.Created;
 
         mRoundCounter = new RoundCounter();
+    }
+
+    @Override
+    protected String getValueForDB(String columnName) throws Exception {
+        switch(columnName) {
+            case Col_TextSummary:
+                return mGameType;
+            case Col_PointSize:
+                return Integer.toString(mPointSize);
+            case Col_CreationDT:
+                return DTF.format(mCreationDT);
+            case Col_Status:
+                return Integer.toString(mStatus.getId());
+            default:
+                return super.getValueForDB(columnName);
+        }
     }
 
     // data accessors
