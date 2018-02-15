@@ -1,10 +1,8 @@
 package com.example.hasu.playerbuddy;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +12,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.hasu.playerbuddy.core.GameSession;
-import com.example.hasu.playerbuddy.core.JSONSerializer;
 import com.example.hasu.playerbuddy.core.db.DBAccessor;
 
-import org.json.JSONException;
-
-import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,22 +112,6 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
         dba.open();
         mSessionAdapter.setList(dba.getAllSessions());
         dba.close();
-
-        /*File[] appFiles = getFilesDir().listFiles();
-        if(appFiles != null) {
-            for(File f : appFiles) {
-                if(f.getName().endsWith(GameSession.Serializer.FILE_EXTENSION)) {
-                    try {
-                        GameSession s = new GameSession("", 0);
-                        s.SERIALIZER.load(f.getName(), getApplicationContext());
-                        mSessionAdapter.addItem(s);
-                    }
-                    catch(JSONException|IOException|ParseException e) {
-                        Log.e("Read invalid data", "", e);
-                    }
-                }
-            }
-        }*/
     }
 
     public void loadSession(GameSession session) {
