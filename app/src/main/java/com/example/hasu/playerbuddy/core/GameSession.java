@@ -40,11 +40,6 @@ public class GameSession extends DBSerializable {
     private Status mStatus;
     private RoundCounter mRoundCounter;
 
-    // for serialization
-    private long mDBId;
-    public void setDBId(long id) { mDBId = id; }
-    public long getDBId() { return mDBId; }
-
     // constructors
     public GameSession() {
         mCreationDT = new Date();

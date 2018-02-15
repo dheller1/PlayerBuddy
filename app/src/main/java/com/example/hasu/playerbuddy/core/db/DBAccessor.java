@@ -43,22 +43,7 @@ public class DBAccessor {
         theDB.close();
     }
 
-    public GameSession makeGameSession(String summaryText, int points) {
-        GameSession s = new GameSession(summaryText, points);
-        ContentValues cv = new ContentValues();
-        cv.put(DBHelper.Col_TextSummary, s.getGameType());
-        cv.put(DBHelper.Col_PointSize, s.getPoints());
-        cv.put(DBHelper.Col_Status, s.getStatus().getId());
-        cv.put(DBHelper.Col_CreationDT, DTF.format(s.getCreationDT()));
-
-        long id = theDB.insert(DBHelper.Table_GameSessions, null, cv);
-        Cursor cursor = theDB.query(DBHelper.Table_GameSessions, GameSessionColumns,
-                DBHelper.Col_Id + "=" + id, null, null, null, null, null);
-        cursor.moveToFirst();
-        cursor.close();
-        s.setDBId(id);
-        return s;
-    }
+    public SQLiteDatabase getDB() { return theDB; }
 
     public List<GameSession> getAllSessions() {
         List<GameSession> l = new ArrayList<>();
@@ -79,6 +64,10 @@ public class DBAccessor {
         Cursor c = theDB.query(DBHelper.Table_GameSessions, GameSessionColumns,
                 DBHelper.Col_Id + "=" + id, null, null, null, null);
         c.moveToFirst();
+        if(c.isAfterLast()) {
+            c.close();
+            return null;
+        }
         GameSession session = getGameSessionFromCursor(c);
         c.close();
         return session;

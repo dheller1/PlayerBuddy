@@ -3,6 +3,7 @@ package com.example.hasu.playerbuddy;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,11 +123,15 @@ public class GameSessionOverviewActivity extends AppCompatActivity {
 
     public void onAddSession(View view) {
         DBAccessor dba = new DBAccessor(getApplicationContext());
+        GameSession s = new GameSession("Warhammer 40.000", 1500);
 
         dba.open();
         try {
-            GameSession s = dba.makeGameSession("Warhammer 40.000", 1500);
+            s.addToDB(dba.getDB());
             mSessionAdapter.addItem(s);
+        }
+        catch(Exception e) {
+            Log.e("Error writing to DB", "Can't add new session to DB", e);
         }
         finally {
             dba.close();

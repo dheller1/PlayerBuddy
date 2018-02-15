@@ -1,7 +1,6 @@
 package com.example.hasu.playerbuddy.core.db;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.SimpleDateFormat;
@@ -21,8 +20,8 @@ public abstract class DBSerializable {
 
     // List of column names which must be updated when saving
     //private List<String> mChangedColumns; // rather use a kind of Set?
-    protected long getID() { return mID; }
-    protected void setID(long id) { mID = id; }
+    public long getDBId() { return mID; }
+    protected void setDBId(long id) { mID = id; }
 
     private class ColumnChange {
         String mColName;
@@ -40,7 +39,7 @@ public abstract class DBSerializable {
     // Subclasses should implemented their own values and finally call the base class method
     protected String getColumnValueForDB(String columnName) throws Exception {
         switch(columnName) {
-            case Col_Id: return Long.toString(getID());
+            case Col_Id: return Long.toString(getDBId());
         }
         throw new Exception("Column not found."); // TODO: Find better type
     }
