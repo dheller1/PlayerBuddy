@@ -102,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
         updateControls();
     }
 
+    public void onSaveChanges(View view) {
+
+    }
+
     private void updateActivations() {
         findViewById(R.id.roundNumberMinus).setEnabled(mSession.getRoundCounter().getValue() > 0);
         findViewById(R.id.ownVpMinus).setEnabled(mSession.getOwnVP() > 0);
