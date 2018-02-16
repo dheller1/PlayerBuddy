@@ -16,11 +16,7 @@ public class MainActivity extends AppCompatActivity {
     static final String KEY_OWNVP = "KEY_OWNVP";
     static final String KEY_OPPONENTVP = "KEY_OPPONENTVP";
     static final String KEY_ROUNDCOUNTER = "KEY_ROUNDCOUNTER";
-
     static final String KEY_SESSION_ID = "KEY_SESSION_ID";
-
-    private int mOwnVP, mOpponentVP;
-    private RoundCounter mRoundCnt;
 
     private GameSession mSession;
 
@@ -28,9 +24,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mOwnVP = 0;
-        mOpponentVP = 0;
-        mRoundCnt = new RoundCounter();
 
         Intent intent = getIntent();
         long sessionID = intent.getLongExtra(KEY_SESSION_ID, -1);
@@ -53,17 +46,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_ROUNDCOUNTER, mRoundCnt.getValue());
-        outState.putInt(KEY_OWNVP, mOwnVP);
-        outState.putInt(KEY_OPPONENTVP, mOpponentVP);
+        outState.putInt(KEY_ROUNDCOUNTER, mSession.getRoundCounter().getValue());
+        outState.putInt(KEY_OWNVP, mSession.getOwnVP());
+        outState.putInt(KEY_OPPONENTVP, mSession.getOpponentVP());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mRoundCnt.setValue(savedInstanceState.getInt(KEY_ROUNDCOUNTER));
-        mOwnVP = savedInstanceState.getInt(KEY_OWNVP);
-        mOpponentVP = savedInstanceState.getInt(KEY_OPPONENTVP);
+        mSession.getRoundCounter().setValue(savedInstanceState.getInt(KEY_ROUNDCOUNTER));
+        mSession.setOwnVP(savedInstanceState.getInt(KEY_OWNVP));
+        mSession.setOpponentVP(savedInstanceState.getInt(KEY_OPPONENTVP));
         updateControls();
     }
 
@@ -73,46 +66,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onDecreaseRoundNumber(View v) {
-        if(mRoundCnt.getValue() > 0) {
-            mRoundCnt.dec();
+        if(mSession.getRoundCounter().getValue() > 0) {
+            mSession.getRoundCounter().dec();
             updateControls();
         }
     }
 
     protected void onIncreaseRoundNumber(View v) {
-        mRoundCnt.inc();
+        mSession.getRoundCounter().inc();
         updateControls();
     }
 
     protected void onDecreaseOwnVP(View v) {
-        if(mOwnVP > 0) {
-            --mOwnVP;
+        if(mSession.getOwnVP() > 0) {
+            mSession.setOwnVP(mSession.getOwnVP()-1);
             updateControls();
         }
     }
 
     protected void onIncreaseOwnVP(View v) {
-        ++mOwnVP;
+        mSession.setOwnVP(mSession.getOwnVP()+1);
         updateControls();
     }
 
 
     protected void onDecreaseOpponentVP(View v) {
-        if(mOpponentVP > 0) {
-            --mOpponentVP;
+        if(mSession.getOpponentVP() > 0) {
+            mSession.setOpponentVP(mSession.getOpponentVP()-1);
             updateControls();
         }
     }
 
     protected void onIncreaseOpponentVP(View v) {
-        ++mOpponentVP;
+        mSession.setOpponentVP(mSession.getOpponentVP()+1);
         updateControls();
     }
 
     private void updateActivations() {
-        findViewById(R.id.roundNumberMinus).setEnabled(mRoundCnt.getValue() > 0);
-        findViewById(R.id.ownVpMinus).setEnabled(mOwnVP > 0);
-        findViewById(R.id.opponentVpMinus).setEnabled(mOpponentVP> 0);
+        findViewById(R.id.roundNumberMinus).setEnabled(mSession.getRoundCounter().getValue() > 0);
+        findViewById(R.id.ownVpMinus).setEnabled(mSession.getOwnVP() > 0);
+        findViewById(R.id.opponentVpMinus).setEnabled(mSession.getOpponentVP() > 0);
     }
 
     private void updateControls() {
@@ -123,15 +116,15 @@ public class MainActivity extends AppCompatActivity {
     private void updateLabels() {
         TextView rnd = (TextView) findViewById(R.id.roundNumberLabel);
         if(rnd != null) {
-            rnd.setText(mRoundCnt.toString());
+            rnd.setText(mSession.getRoundCounter().toString());
         }
         TextView tOwn = (TextView) findViewById(R.id.ownVpLabel);
         if(tOwn != null) {
-            tOwn.setText(Integer.toString(mOwnVP));
+            tOwn.setText(Integer.toString(mSession.getOwnVP()));
         }
         TextView tOpp = (TextView) findViewById(R.id.opponentVpLabel);
         if(tOpp != null) {
-            tOpp.setText(Integer.toString(mOpponentVP));
+            tOpp.setText(Integer.toString(mSession.getOpponentVP()));
         }
     }
 }

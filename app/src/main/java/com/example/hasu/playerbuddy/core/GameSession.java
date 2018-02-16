@@ -56,6 +56,7 @@ public class GameSession extends DBSerializable {
         return Status.Created;
     }
 
+
     public enum Status {
         Created(0), Started(1), Finished(2);
         private int id;
@@ -66,6 +67,8 @@ public class GameSession extends DBSerializable {
     // data fields
     private Date mCreationDT, mStartGameDT, mFinishGameDT;
     private int mPointSize;
+    private int mOwnVP=0;
+    private int mOpponentVP=0;
     private String mGameType;
     private Status mStatus;
     private RoundCounter mRoundCounter;
@@ -105,6 +108,12 @@ public class GameSession extends DBSerializable {
     public String getGameType() { return mGameType; }
     public Date getCreationDT() { return mCreationDT; }
     public Status getStatus() { return mStatus; }
+
+    public int getOwnVP() { return mOwnVP; }
+    public void setOwnVP(int mOwnVP) { this.mOwnVP = mOwnVP; }
+    public int getOpponentVP() { return mOpponentVP; }
+    public void setOpponentVP(int mOpponentVP) { this.mOpponentVP = mOpponentVP; }
+    public RoundCounter getRoundCounter() { return mRoundCounter; }
 
     // FIXME: Are these really needed? Find a better solution to create an instance from DB !!
     public void setPoints(int points) { mPointSize = points; }
