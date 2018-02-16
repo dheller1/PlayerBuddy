@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.hasu.playerbuddy.core.GameSession;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -74,6 +75,15 @@ public abstract class DBSerializable {
         return true;
     }
 
+    public void forceSaving(SQLiteDatabase db) {
+        List<ColumnChange> changes = new ArrayList<>();
+        ColumnChange c;
+        while((c = mPendingChanges.poll()) != null) {
+            changes.add(c);
+        }
+        saveChanges(db, changes);
+    }
+
     public void loadFromDB(SQLiteDatabase db, long id) throws Exception {
         Cursor c = db.query(getTableName(), getAllColumns(),
                 Col_Id + "=" + id, null, null, null, null);
@@ -114,6 +124,14 @@ public abstract class DBSerializable {
 
     protected void markChange(ColumnChange change) {
         mPendingChanges.add(change);
+    }
+
+    private void saveChanges(SQLiteDatabase db, List<ColumnChange> changes) {
+        ContentValues cv = new ContentValues();
+        for(ColumnChange c : changes) {
+            cv.put(c.mColName, c.mNewValue);
+        }
+        db.update(getTableName(), cv, Col_Id + "=" + getDBId(), null);
     }
 
     protected void updateDB(List<ColumnChange> changesToProcess) {
