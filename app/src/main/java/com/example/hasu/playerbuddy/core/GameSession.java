@@ -9,13 +9,38 @@ import java.util.Date;
 import java.util.List;
 
 public class GameSession extends DBSerializable {
-    // DB serialization constants
+    // DB serialization constants and accessors/setters
+    @Override protected String getTableName() { return "game_sessions"; }
+
     private static final String Col_TextSummary = "text_summary";
     private static final String Col_PointSize = "point_size";
     private static final String Col_CreationDT = "creation_dt";
     private static final String Col_Status = "status";
-    @Override protected String getTableName() { return "game_sessions"; }
-    @Override protected String[] getAllColumns() { return new String[]{Col_TextSummary, Col_Status, Col_PointSize, Col_CreationDT}; }
+    private static final String Col_PlayerVP = "player_vp";
+    private static final String Col_OpponentVP = "opponent_vp";
+    // add column names for all fields that must be serialized here
+    @Override protected String[] getAllColumns() { return new String[]{Col_TextSummary, Col_Status, Col_PointSize, Col_CreationDT,
+        Col_PlayerVP, Col_OpponentVP}; }
+
+    @Override protected String getColumnValueForDB(String columnName) {
+        switch(columnName) {
+            case Col_TextSummary:
+                return mGameType;
+            case Col_PointSize:
+                return Integer.toString(mPointSize);
+            case Col_CreationDT:
+                return DTF.format(mCreationDT);
+            case Col_Status:
+                return Integer.toString(mStatus.getId());
+            case Col_PlayerVP:
+                return Integer.toString(mOwnVP);
+            case Col_OpponentVP:
+                return Integer.toString(mOpponentVP);
+            default:
+                return super.getColumnValueForDB(columnName);
+        }
+    }
+
     @Override protected void setColumnValue(String column, double value) {} // not used
     @Override protected void setColumnValue(String column, int value) {
         switch(column) {
@@ -24,6 +49,12 @@ public class GameSession extends DBSerializable {
                 break;
             case Col_Status:
                 mStatus = statusForId(value);
+                break;
+            case Col_PlayerVP:
+                mOwnVP = value;
+                break;
+            case Col_OpponentVP:
+                mOpponentVP = value;
                 break;
         }
     }
@@ -87,22 +118,6 @@ public class GameSession extends DBSerializable {
 
         mRoundCounter = new RoundCounter();
     }
-
-    @Override protected String getColumnValueForDB(String columnName) throws Exception {
-        switch(columnName) {
-            case Col_TextSummary:
-                return mGameType;
-            case Col_PointSize:
-                return Integer.toString(mPointSize);
-            case Col_CreationDT:
-                return DTF.format(mCreationDT);
-            case Col_Status:
-                return Integer.toString(mStatus.getId());
-            default:
-                return super.getColumnValueForDB(columnName);
-        }
-    }
-
     // data accessors
     public int getPoints() { return mPointSize; }
     public String getGameType() { return mGameType; }
@@ -110,10 +125,21 @@ public class GameSession extends DBSerializable {
     public Status getStatus() { return mStatus; }
 
     public int getOwnVP() { return mOwnVP; }
-    public void setOwnVP(int mOwnVP) { this.mOwnVP = mOwnVP; }
     public int getOpponentVP() { return mOpponentVP; }
-    public void setOpponentVP(int mOpponentVP) { this.mOpponentVP = mOpponentVP; }
     public RoundCounter getRoundCounter() { return mRoundCounter; }
+
+    public void setOwnVP(int vp) {
+        if(vp != mOwnVP) {
+            markChange(new ColumnChange(Col_PlayerVP, Integer.toString(vp)));
+        }
+        mOwnVP = vp;
+    }
+    public void setOpponentVP(int vp) {
+        if(vp != mOpponentVP) {
+            markChange(new ColumnChange(Col_OpponentVP, Integer.toString(vp)));
+        }
+        mOpponentVP = vp;
+    }
 
     // FIXME: Are these really needed? Find a better solution to create an instance from DB !!
     public void setPoints(int points) { mPointSize = points; }

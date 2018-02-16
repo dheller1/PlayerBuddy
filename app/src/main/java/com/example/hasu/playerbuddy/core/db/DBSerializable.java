@@ -35,10 +35,10 @@ public abstract class DBSerializable {
     public long getDBId() { return mID; }
     protected void setDBId(long id) { mID = id; }
 
-    private class ColumnChange {
+    protected class ColumnChange {
         String mColName;
         String mNewValue;
-        ColumnChange(String colName, String value) { mColName = colName; mNewValue = value; }
+        public ColumnChange(String colName, String value) { mColName = colName; mNewValue = value; }
     };
 
     private ConcurrentLinkedQueue<ColumnChange> mPendingChanges;
@@ -49,11 +49,11 @@ public abstract class DBSerializable {
     }
 
     // Subclasses should implemented their own values and finally call the base class method
-    protected String getColumnValueForDB(String columnName) throws Exception {
+    protected String getColumnValueForDB(String columnName) {
         switch(columnName) {
             case Col_Id: return Long.toString(getDBId());
         }
-        throw new Exception("Column not found."); // TODO: Find better type
+        return null;
     }
 
     public boolean addToDB(SQLiteDatabase db) throws Exception {
@@ -62,6 +62,10 @@ public abstract class DBSerializable {
         }
         ContentValues cv = new ContentValues();
         for(String col : getAllColumns()) {
+            String val = getColumnValueForDB(col);
+            if(val == null) {
+                throw new Exception("No value received for column " + col);
+            }
             cv.put(col, getColumnValueForDB(col));
         }
 
@@ -106,6 +110,10 @@ public abstract class DBSerializable {
                     throw new Exception("datatype not supported.");
             }
         }
+    }
+
+    protected void markChange(ColumnChange change) {
+        mPendingChanges.add(change);
     }
 
     protected void updateDB(List<ColumnChange> changesToProcess) {
