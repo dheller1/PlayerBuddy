@@ -3,6 +3,7 @@ package com.example.hasu.playerbuddy;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,10 +35,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         long sessionID = intent.getLongExtra(KEY_SESSION_ID, -1);
 
+        mSession = new GameSession();
         DBAccessor dba = new DBAccessor(getApplicationContext());
         dba.open();
-        mSession = dba.getSessionFromId(sessionID);
-        dba.close();
+        try {
+            mSession.loadFromDB(dba.getDB(), sessionID);
+        }
+        catch(Exception e) {
+            Log.e("MainActivity::onCreate", "Unable to load session from DB.", e);
+        }
+        finally {
+            dba.close();
+        }
         updateControls();
     }
 

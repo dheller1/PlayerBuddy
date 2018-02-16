@@ -60,19 +60,6 @@ public class DBAccessor {
         return l;
     }
 
-    public GameSession getSessionFromId(long id) {
-        Cursor c = theDB.query(DBHelper.Table_GameSessions, GameSessionColumns,
-                DBHelper.Col_Id + "=" + id, null, null, null, null);
-        c.moveToFirst();
-        if(c.isAfterLast()) {
-            c.close();
-            return null;
-        }
-        GameSession session = getGameSessionFromCursor(c);
-        c.close();
-        return session;
-    }
-
     private GameSession getGameSessionFromCursor(Cursor c) {
         int colId = c.getColumnIndex(DBHelper.Col_Id);
         int colSummary = c.getColumnIndex(DBHelper.Col_TextSummary);
