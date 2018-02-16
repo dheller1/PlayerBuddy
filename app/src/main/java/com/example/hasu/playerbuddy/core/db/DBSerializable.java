@@ -78,30 +78,33 @@ public abstract class DBSerializable {
             c.close();
             throw new Exception("Entry with given ID not found.");
         }
-
         try {
-            for (String col : getAllColumns()) {
-                int colIndex = c.getColumnIndexOrThrow(col);
-                switch (c.getType(colIndex)) {
-                    case FIELD_TYPE_INTEGER:
-                        setColumnValue(col, c.getInt(colIndex));
-                        break;
-                    case FIELD_TYPE_FLOAT:
-                        setColumnValue(col, c.getDouble(colIndex));
-                        break;
-                    case FIELD_TYPE_STRING:
-                        setColumnValue(col, c.getString(colIndex));
-                        break;
-                    case FIELD_TYPE_NULL:
-                        break;
-                    case FIELD_TYPE_BLOB:
-                    default:
-                        throw new Exception("datatype not supported.");
-                }
-            }
+            loadFromCursor(c);
         }
         finally {
             c.close();
+        }
+    }
+
+    public void loadFromCursor(Cursor cursor) throws Exception {
+        for (String col : getAllColumns()) {
+            int colIndex = cursor.getColumnIndexOrThrow(col);
+            switch (cursor.getType(colIndex)) {
+                case FIELD_TYPE_INTEGER:
+                    setColumnValue(col, cursor.getInt(colIndex));
+                    break;
+                case FIELD_TYPE_FLOAT:
+                    setColumnValue(col, cursor.getDouble(colIndex));
+                    break;
+                case FIELD_TYPE_STRING:
+                    setColumnValue(col, cursor.getString(colIndex));
+                    break;
+                case FIELD_TYPE_NULL:
+                    break;
+                case FIELD_TYPE_BLOB:
+                default:
+                    throw new Exception("datatype not supported.");
+            }
         }
     }
 
