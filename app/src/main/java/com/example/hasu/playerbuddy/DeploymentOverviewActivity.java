@@ -3,6 +3,7 @@ package com.example.hasu.playerbuddy;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -102,14 +103,13 @@ public class DeploymentOverviewActivity extends AppCompatActivity {
     }
 
     private void chooseRandomDeployment() {
-        int randomIndex = ThreadLocalRandom.current().nextInt(0, mDeploymentViews.size());
+        int randomIndex;
+        do {
+            randomIndex = ThreadLocalRandom.current().nextInt(0, mDeploymentViews.size());
+        } while(randomIndex == mHighlightedIndex);
 
         if(mHighlightedIndex >= 0) {
-            ImageView iv = mDeploymentViews.get(mHighlightedIndex);
-            if(iv != null) {
-                iv.setPadding(0, 0, 0, 0);
-                iv.setBackgroundColor(Color.TRANSPARENT);
-            }
+            clearDeployment();
         }
 
         ImageView iv = mDeploymentViews.get(randomIndex);
