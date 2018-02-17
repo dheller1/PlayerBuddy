@@ -11,7 +11,14 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
         </activity>
-        <activity android:name=".DeploymentOverviewActivity" />
+        <activity android:name=".DeploymentOverviewActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="deploymentoverview" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ShowFullscreenImageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

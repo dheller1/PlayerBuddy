@@ -3,14 +3,13 @@ package com.example.hasu.playerbuddy;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.hasu.playerbuddy.core.GameSession;
-import com.example.hasu.playerbuddy.core.RoundCounter;
 import com.example.hasu.playerbuddy.core.db.DBAccessor;
-
 
 public class MainActivity extends AppCompatActivity {
     static final String KEY_OWNVP = "KEY_OWNVP";
@@ -27,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         long sessionID = intent.getLongExtra(KEY_SESSION_ID, -1);
+
+        TextView setupSummary = findViewById(R.id.setupStepsSummary);
+        setupSummary.setMovementMethod(LinkMovementMethod.getInstance());
 
         mSession = new GameSession();
         DBAccessor dba = new DBAccessor(getApplicationContext());
