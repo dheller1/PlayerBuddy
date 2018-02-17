@@ -3,6 +3,7 @@ package com.example.hasu.playerbuddy.core.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.hasu.playerbuddy.core.GameSession;
 
@@ -81,7 +82,9 @@ public abstract class DBSerializable {
         while((c = mPendingChanges.poll()) != null) {
             changes.add(c);
         }
-        saveChanges(db, changes);
+        if(!changes.isEmpty()) {
+            saveChanges(db, changes);
+        }
     }
 
     public void loadFromDB(SQLiteDatabase db, long id) throws Exception {
@@ -105,7 +108,12 @@ public abstract class DBSerializable {
             int colIndex = cursor.getColumnIndexOrThrow(col);
             switch (cursor.getType(colIndex)) {
                 case FIELD_TYPE_INTEGER:
-                    setColumnValue(col, cursor.getInt(colIndex));
+                    if(col.equals(Col_Id)) {
+                        mID = cursor.getLong(colIndex);
+                    }
+                    else {
+                        setColumnValue(col, cursor.getInt(colIndex));
+                    }
                     break;
                 case FIELD_TYPE_FLOAT:
                     setColumnValue(col, cursor.getDouble(colIndex));
@@ -131,7 +139,10 @@ public abstract class DBSerializable {
         for(ColumnChange c : changes) {
             cv.put(c.mColName, c.mNewValue);
         }
-        db.update(getTableName(), cv, Col_Id + "=" + getDBId(), null);
+        int affected = db.update(getTableName(), cv, Col_Id + "=" + getDBId(), null);
+        if(affected != 1) {
+            Log.w("DBSaveChanges", "Invalid number of affected rows: " + Integer.toString(affected));
+        }
     }
 
     protected void updateDB(List<ColumnChange> changesToProcess) {

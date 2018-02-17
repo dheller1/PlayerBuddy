@@ -19,7 +19,7 @@ public class GameSession extends DBSerializable {
     private static final String Col_PlayerVP = "player_vp";
     private static final String Col_OpponentVP = "opponent_vp";
     // add column names for all fields that must be serialized here
-    @Override public String[] getAllColumns() { return new String[]{Col_TextSummary, Col_Status, Col_PointSize, Col_CreationDT,
+    @Override public String[] getAllColumns() { return new String[]{Col_Id, Col_TextSummary, Col_Status, Col_PointSize, Col_CreationDT,
         Col_PlayerVP, Col_OpponentVP}; }
 
     public String getSQLCreateQuery() { return "CREATE TABLE " + getTableName() + "("
