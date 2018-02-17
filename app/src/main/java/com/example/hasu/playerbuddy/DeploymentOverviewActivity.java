@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,9 +34,19 @@ public class DeploymentOverviewActivity extends AppCompatActivity {
         mDeploymentViews.add((ImageView)findViewById(R.id.deploymentView5));
         mDeploymentViews.add((ImageView)findViewById(R.id.deploymentView6));
 
-        for(ImageView v : mDeploymentViews) {
-            v.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy1));
-        }
+        mDeploymentViews.get(0).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy1));
+        mDeploymentViews.get(1).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy2));
+        mDeploymentViews.get(2).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy3));
+        mDeploymentViews.get(3).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy4));
+        mDeploymentViews.get(4).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy5));
+        mDeploymentViews.get(5).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.deploy6));
+
+        ((TextView)findViewById(R.id.textView1)).setText(R.string.deployment_map_1);
+        ((TextView)findViewById(R.id.textView2)).setText(R.string.deployment_map_2);
+        ((TextView)findViewById(R.id.textView3)).setText(R.string.deployment_map_3);
+        ((TextView)findViewById(R.id.textView4)).setText(R.string.deployment_map_4);
+        ((TextView)findViewById(R.id.textView5)).setText(R.string.deployment_map_5);
+        ((TextView)findViewById(R.id.textView6)).setText(R.string.deployment_map_6);
     }
 
     @Override
@@ -135,26 +146,28 @@ public class DeploymentOverviewActivity extends AppCompatActivity {
             // FIXME: Try to query the resource ID here?! But it seems not easy starting with an
             // ImageView instance...
             Intent fullscreenIntent = new Intent(this, ShowFullscreenImageActivity.class);
-            fullscreenIntent.putExtra(ShowFullscreenImageActivity.FULLSCREEN_IMAGE_ID, R.drawable.deploy1);
+
+            int resId = 0;
+            if(iv == mDeploymentViews.get(0)) {
+                resId = R.drawable.deploy1;
+            }
+            else if(iv == mDeploymentViews.get(1)) {
+                resId = R.drawable.deploy2;
+            }
+            else if(iv == mDeploymentViews.get(2)) {
+                resId = R.drawable.deploy3;
+            }
+            else if(iv == mDeploymentViews.get(3)) {
+                resId = R.drawable.deploy4;
+            }
+            else if(iv == mDeploymentViews.get(4)) {
+                resId = R.drawable.deploy5;
+            }
+            else if(iv == mDeploymentViews.get(5)) {
+                resId = R.drawable.deploy6;
+            }
+            fullscreenIntent.putExtra(ShowFullscreenImageActivity.FULLSCREEN_IMAGE_ID, resId);
             startActivity(fullscreenIntent);
         }
     }
-
-    /*public Bitmap loadImage(int imageID, int targetHeight, int targetWidth) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(getResources(), imageID, options);
-
-        final int origHeight = options.outHeight;
-        final int origWidth = options.outWidth;
-        int inSampleSize = 1;
-        while((origHeight/(2*inSampleSize)) > targetHeight &&
-              (origWidth/(2*inSampleSize)) > targetWidth)
-        {
-            inSampleSize *= 2;
-        }
-        options.inSampleSize = inSampleSize;
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(getResources(), imageID, options);
-    }*/
 }

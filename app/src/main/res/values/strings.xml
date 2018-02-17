@@ -6,4 +6,12 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="title_activity_show_fullscreen_image">ShowFullscreenImageActivity</string>
+
+    <string name="deployment_map_1">1 - Spearhead Assault</string>
+    <string name="deployment_map_2">2 - Dawn of War</string>
+    <string name="deployment_map_3">3 - Search and Destroy</string>
+    <string name="deployment_map_4">4 - Hammer and Anvil</string>
+    <string name="deployment_map_5">5 - Front-line Assault</string>
+    <string name="deployment_map_6">6 - Vanguard Strike</string>
+
 </resources>
