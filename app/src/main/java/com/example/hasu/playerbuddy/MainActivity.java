@@ -103,7 +103,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSaveChanges(View view) {
-
+        DBAccessor dba = new DBAccessor(getApplicationContext());
+        dba.open();
+        mSession.forceSaving(dba.getDB());
+        dba.close();
     }
 
     private void updateActivations() {

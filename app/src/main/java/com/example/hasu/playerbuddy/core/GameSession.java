@@ -10,7 +10,7 @@ import java.util.List;
 
 public class GameSession extends DBSerializable {
     // DB serialization constants and accessors/setters
-    @Override protected String getTableName() { return "game_sessions"; }
+    @Override public String getTableName() { return "game_sessions"; }
 
     private static final String Col_TextSummary = "text_summary";
     private static final String Col_PointSize = "point_size";
@@ -19,8 +19,17 @@ public class GameSession extends DBSerializable {
     private static final String Col_PlayerVP = "player_vp";
     private static final String Col_OpponentVP = "opponent_vp";
     // add column names for all fields that must be serialized here
-    @Override protected String[] getAllColumns() { return new String[]{Col_TextSummary, Col_Status, Col_PointSize, Col_CreationDT,
+    @Override public String[] getAllColumns() { return new String[]{Col_TextSummary, Col_Status, Col_PointSize, Col_CreationDT,
         Col_PlayerVP, Col_OpponentVP}; }
+
+    public String getSQLCreateQuery() { return "CREATE TABLE " + getTableName() + "("
+            + Col_Id + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + Col_TextSummary + " TEXT, "
+            + Col_PointSize + " INTEGER, "
+            + Col_CreationDT + " TEXT NOT NULL, "
+            + Col_Status + " TEXT, "
+            + Col_PlayerVP + " INTEGER, "
+            + Col_OpponentVP + " INTEGER);"; }
 
     @Override protected String getColumnValueForDB(String columnName) {
         switch(columnName) {

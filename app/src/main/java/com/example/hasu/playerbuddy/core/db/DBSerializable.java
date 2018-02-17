@@ -25,7 +25,7 @@ public abstract class DBSerializable {
     protected abstract void setColumnValue(String column, double value);
     protected abstract void setColumnValue(String column, String value);
 
-    private static final String Col_Id = "_id";
+    protected static final String Col_Id = "_id";
     protected static final SimpleDateFormat DTF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     private long mID;
