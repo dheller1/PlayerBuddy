@@ -3,6 +3,7 @@ package com.example.hasu.playerbuddy;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView setupSummary = findViewById(R.id.setupStepsSummary);
         setupSummary.setMovementMethod(LinkMovementMethod.getInstance());
+        setupSummary.setText(Html.fromHtml(getApplicationContext().getString(R.string.setup_steps_summary)));
 
         mSession = new GameSession();
         DBAccessor dba = new DBAccessor(getApplicationContext());
