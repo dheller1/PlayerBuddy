@@ -9,8 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".DeploymentOverviewActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -18,7 +17,6 @@
                 <data android:scheme="deploymentoverview" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ShowFullscreenImageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -29,6 +27,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".GameSessionMainActivity">
         </activity>
     </application>
 

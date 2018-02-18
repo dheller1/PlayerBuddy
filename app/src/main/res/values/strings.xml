@@ -16,4 +16,12 @@
 
     <string name="setup_steps_summary">1. Choose mission\n2. Set up terrain\n3. Place objectives (if needed)\n4. Determine <a href="deploymentoverview://do">deployment</a> (player who placed last objective)\n5. Choose deployment zone\n6. Alternate placing units (other player starts)\n7. Roll-off for first turn\n8. Seize initiative</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    // tab headers
+    <string name="category_game_setup">Setup</string>
+    <string name="category_game_play">Play</string>
+
 </resources>
