@@ -4,9 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.hasu.playerbuddy.R;
 
@@ -66,6 +70,11 @@ public class GameSessionSetupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_game_session_setup, container, false);
+
+        TextView setupSummary = rootView.findViewById(R.id.setupStepsSummary);
+        setupSummary.setMovementMethod(LinkMovementMethod.getInstance());
+        setupSummary.setText(Html.fromHtml(getActivity().getApplicationContext().getString(R.string.setup_steps_summary)));
+
         return rootView;
     }
 
